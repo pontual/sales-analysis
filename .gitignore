@@ -3,3 +3,11 @@
 .\#*
 
 __pycache__
+
+
+*.xls
+*.XLS
+*.csv
+*.CSV
+*.od*
+*.OD*
