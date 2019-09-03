@@ -1,7 +1,7 @@
 import xlrd
 from datetime import date, datetime
 
-def parse_sales(pedidos_filename, itens_filename):
+def parse_sales(pedidos_filename, itens_filename, output_filename):
     """Given the filenames of pedidos (numero sintetico) and
     itens (produto analitico), return a list of produto, date and quantity rows.
 
@@ -47,7 +47,7 @@ def parse_sales(pedidos_filename, itens_filename):
 
         nomeCliente = pedidos_sheet.cell(pedido_row, CLIENTE).value
         dataValue = pedidos_sheet.cell(pedido_row, DATA).value
-        data = datetime.strptime(dataValue, "%d/%m/%Y")
+        data = datetime.strptime(dataValue, "%d/%m/%Y").strftime("%Y-%m-%d")
 
         pedidos[label+str(numero)] = (data, nomeCliente)
 
@@ -67,7 +67,7 @@ def parse_sales(pedidos_filename, itens_filename):
         pedido_data = pedidos[pedido_label][0]
 
         if pedido_cliente.startswith("UNIAO BRINDES IMPORT") or pedido_cliente.startswith("PONTUAL EXPORT"):
-            print("Skipping Uniao/Pontual pedido", pedido_label)
+            pass
         else:
             produtoCellValue = itens_sheet.cell(item_row, CODIGO_PRODUTO).value
             if isinstance(produtoCellValue, str):
@@ -86,5 +86,12 @@ def parse_sales(pedidos_filename, itens_filename):
                 continue
             qtde = int(qtdeCellValue)
 
-            itens.append((pedido_data, codigoProduto, qtde))
-    return itens
+            itens.append((pedido_data, codigoProduto, str(qtde)))
+            
+    # generate CSV
+    with open(output_filename, 'w', encoding="utf-8") as outf:
+        print("data,codigo,qtde", file=outf)
+        for i in itens:
+            print(",".join(i), file=outf)
+            
+    print("Wrote", output_filename)
