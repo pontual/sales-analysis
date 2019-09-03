@@ -11,3 +11,6 @@ __pycache__
 *.CSV
 *.od*
 *.OD*
+
+.ipynb_checkpoints
+*.ipynb
