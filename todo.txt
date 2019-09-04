@@ -1,1 +1,1 @@
-[  ] check where pedido number sequence is broken
+[OK] check where pedido date sequence is broken
