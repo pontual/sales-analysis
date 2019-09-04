@@ -1,0 +1,8 @@
+Sum produto totals by date
+
+import pandas as pd
+
+df = pd.read_csv("itens.csv")
+df2 = df.groupby(['codigo', 'data']).sum()
+
+df2.loc['140873P']

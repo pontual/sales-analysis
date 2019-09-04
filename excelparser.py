@@ -1,4 +1,6 @@
 import xlrd
+import glob
+from datetime import datetime
 from os import devnull
 from datetime import date, datetime
 
@@ -96,7 +98,7 @@ def build_itens(itens, pedidos, skipped, itens_filename):
         k = pedido_label + "_" + codigoProduto
 
         try:
-            itens[k] = (pedidos[pedido_label], codigoProduto, qtde)
+            itens[k] = (pedidos[pedido_label], codigoProduto, str(qtde))
         except KeyError:
             # pedido not found because it was skipped for being uniao
             if pedido_label not in skipped:
@@ -197,3 +199,37 @@ def parse_sales(pedidos_filename, itens_filename, output_filename):
             print(",".join(i), file=outf)
             
     print("Wrote", output_filename)
+
+
+def write_date_prod_csv(itens, output_filename):
+    with open(output_filename, 'w', encoding="utf-8") as outf:
+        print("data,codigo,qtde", file=outf)
+        for i in itens.values():
+            print(",".join(i), file=outf)
+
+
+def compile_xls():
+    DIR = "data"
+
+    companies = ["ptl", "uni"]
+
+    pedidos = {}
+    skipped = set()
+    itens = {}
+    
+    # numsint
+    for label in companies:
+        filenames = glob.glob(DIR + "/numsint/" + label + "/*.xls")
+        for filename in filenames:
+            print("reading pedido", filename)
+            build_pedidos(pedidos, skipped, filename)
+
+    # prodan
+    for label in companies:
+        filenames = glob.glob(DIR + "/prodan/" + label + "/*.xls")
+        for filename in filenames:
+            print("reading itens", filename)
+            build_itens(itens, pedidos, skipped, filename)
+
+    timestamp = datetime.now().strftime("%Y%m%d%H%M")
+    write_date_prod_csv(itens, DIR + "/compiled_" + timestamp + ".csv")
