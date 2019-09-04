@@ -5,6 +5,7 @@ import pyautogui
 from pyautogui import moveTo, click, typewrite
 
 pyautogui.PAUSE = 0.25
+DEST_DIR = "c:\\Users\\Heitor\\Desktop\\code\\sales-analysis\\data"
 
 def set_dates(year, month):
     DAY_X = 404
@@ -37,8 +38,7 @@ def set_dates(year, month):
 
     
 def save_num_sint(year, month, label):
-    DEST_DIR = "c:\\Users\\Heitor\\Desktop\\code\\sales-analysis\\data\\numsint"
-    fname = "{}\\{}\\numsint_{}_{:02d}".format(DEST_DIR, label, year, month)
+    fname = "{}\\numsint\\{}\\numsint_{}_{:02d}".format(DEST_DIR, label, year, month)
     
     subprocess.run(r'winactivateloja.exe')
     
@@ -74,10 +74,52 @@ def save_num_sint(year, month, label):
     
     click(1277, 3)
     sleep(2)
+
+
+def save_prod_an(year, month, label):
+    fname = "{}\\prodan\\{}\\prodan_{}_{:02d}".format(DEST_DIR, label, year, month)
+
+    subprocess.run(r'winactivateloja.exe')
+
+    click(410, 33)
+    moveTo(458, 137)
+    sleep(0.5)
+
+    moveTo(587, 137)
+    moveTo(613, 188)
+    sleep(0.9)
+
+    moveTo(705, 190)
+    sleep(0.5)
+    click(705, 190)
+    sleep(1)
+
+    click(317, 226)
+    
+    for i in range(5):
+        typewrite("\n")
+
+    sleep(1)
+
+    set_dates(year, month)
+    typewrite("\n")
+
+    sleep(10)
+    click(84, 49)
+    sleep(0.5)
+    typewrite(fname)
+    sleep(0.5)
+    typewrite("\n")
+
+    sleep(3)
+    
+    click(1277, 3)
+    sleep(2)
     
 
-def get_ptl_sales():
+def get_sales():
     # Uniao
+    uni_num_sint = """
     for month in range(8, 13):
         save_num_sint(2017, month, 'uni')
     
@@ -86,8 +128,31 @@ def get_ptl_sales():
 
     for month in range(1, 9):
         save_num_sint(2019, month, 'uni')
+    """    
+
+
+def get_prod_ptl():
+    for year in range(2015, 2019):
+        for month in range(1, 13):
+            save_prod_an(year, month, "ptl")
+
+    for month in range(1, 9):
+        save_prod_an(2019, month, "ptl")
+
+
+def get_prod_uni():
+    for month in range(8, 13):
+        save_prod_an(2017, month, 'uni')
     
-    
+    for month in range(1, 13):
+        save_prod_an(2018, month, 'uni')
+
+    for month in range(1, 9):
+        save_prod_an(2019, month, 'uni')
+
+        
 if __name__ == "__main__":
-    get_ptl_sales()
+    # get_prod_uni()
+    print("Edit the source to save files from the management software")
+
 
