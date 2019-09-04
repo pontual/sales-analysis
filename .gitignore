@@ -12,7 +12,4 @@ __pycache__
 *.od*
 *.OD*
 
-.ipynb_checkpoints
-*.ipynb
-
 .~lock*
